@@ -55,8 +55,8 @@ Complete documentation for the EagleEye People Counting System.
 ## 🆘 Need Help?
 
 - Check [INSTALLATION.md](INSTALLATION.md#troubleshooting) for common issues
-- Search [GitHub Issues](https://github.com/The-Harsh-Vardhan/EagleEye/issues)
-- Start a [Discussion](https://github.com/The-Harsh-Vardhan/EagleEye/discussions)
+- Search [GitHub Issues](https://github.com/The-Harsh-Vardhan/EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision/issues)
+- Start a [Discussion](https://github.com/The-Harsh-Vardhan/EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision/discussions)
 
 ---
 

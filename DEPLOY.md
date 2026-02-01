@@ -35,7 +35,7 @@ git add .
 git commit -m "feat: initial release with complete documentation"
 
 # Add remote
-git remote add origin https://github.com/The-Harsh-Vardhan/EagleEye.git
+git remote add origin https://github.com/The-Harsh-Vardhan/EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision.git
 
 # Push to GitHub
 git branch -M main

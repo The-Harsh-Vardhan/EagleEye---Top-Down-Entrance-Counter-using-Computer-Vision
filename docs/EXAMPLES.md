@@ -608,4 +608,4 @@ PROCESSING_WIDTH = None  # Full resolution
 
 ---
 
-For more examples and use cases, visit the [GitHub repository](https://github.com/The-Harsh-Vardhan/EagleEye) or [open a discussion](https://github.com/The-Harsh-Vardhan/EagleEye/discussions).
+For more examples and use cases, visit the [GitHub repository](https://github.com/The-Harsh-Vardhan/EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision) or [open a discussion](https://github.com/The-Harsh-Vardhan/EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision/discussions).

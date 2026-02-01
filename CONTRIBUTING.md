@@ -79,8 +79,8 @@ We welcome code contributions! Here are some areas where help is especially appr
 1. **Fork and clone the repository**
 
    ```bash
-   git clone https://github.com/The-Harsh-Vardhan/EagleEye.git
-   cd EagleEye
+   git clone https://github.com/The-Harsh-Vardhan/EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision.git
+   cd EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision
    ```
 
 2. **Create a virtual environment**
@@ -282,7 +282,7 @@ python -m pstats profile.stats
 
 ## Questions?
 
-- Open a [GitHub Discussion](https://github.com/The-Harsh-Vardhan/EagleEye/discussions)
+- Open a [GitHub Discussion](https://github.com/The-Harsh-Vardhan/EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision/discussions)
 - Comment on relevant issues
 - Reach out to maintainers
 

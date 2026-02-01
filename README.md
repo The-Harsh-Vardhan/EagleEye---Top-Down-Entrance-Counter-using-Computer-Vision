@@ -13,7 +13,7 @@
 
 [Features](#-features) • [Installation](#-installation) • [Usage](#-usage) • [Documentation](#-documentation) • [Architecture](#-architecture)
 
-[⭐ Star on GitHub](https://github.com/The-Harsh-Vardhan/EagleEye) • [🐛 Report Bug](https://github.com/The-Harsh-Vardhan/EagleEye/issues) • [💡 Request Feature](https://github.com/The-Harsh-Vardhan/EagleEye/issues)
+[⭐ Star on GitHub](https://github.com/The-Harsh-Vardhan/EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision) • [🐛 Report Bug](https://github.com/The-Harsh-Vardhan/EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision/issues) • [💡 Request Feature](https://github.com/The-Harsh-Vardhan/EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision/issues)
 
 </div>
 
@@ -41,8 +41,8 @@ Get up and running in 5 minutes:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/The-Harsh-Vardhan/EagleEye.git
-cd EagleEye
+git clone https://github.com/The-Harsh-Vardhan/EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision.git
+cd EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision
 
 # 2. Create virtual environment
 python -m venv .venv
@@ -186,8 +186,8 @@ EagleEye follows a modular pipeline architecture for maintainability and extensi
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/The-Harsh-Vardhan/EagleEye.git
-   cd EagleEye
+   git clone https://github.com/The-Harsh-Vardhan/EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision.git
+   cd EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision
    ```
 
 2. **Create and activate virtual environment**
@@ -608,7 +608,7 @@ sudo apt-get install libgl1-mesa-glx
 # Grant Terminal camera access in System Preferences > Security & Privacy
 ```
 
-For more help, see [Installation Guide](docs/INSTALLATION.md) or [open an issue](https://github.com/The-Harsh-Vardhan/EagleEye/issues).
+For more help, see [Installation Guide](docs/INSTALLATION.md) or [open an issue](https://github.com/The-Harsh-Vardhan/EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision/issues).
 
 ---
 
@@ -686,15 +686,15 @@ and/or sell copies of the Software, subject to the conditions in the LICENSE fil
 
 ## 📧 Contact & Support
 
-- **Issues & Bug Reports**: [GitHub Issues](https://github.com/The-Harsh-Vardhan/EagleEye/issues)
-- **Questions & Discussions**: [GitHub Discussions](https://github.com/The-Harsh-Vardhan/EagleEye/discussions)
+- **Issues & Bug Reports**: [GitHub Issues](https://github.com/The-Harsh-Vardhan/EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision/issues)
+- **Questions & Discussions**: [GitHub Discussions](https://github.com/The-Harsh-Vardhan/EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision/discussions)
 - **Documentation**: See [docs/](docs/) folder
 
 ---
 
 ## ⭐ Star History
 
-If you find EagleEye useful, please consider giving it a [star on GitHub](https://github.com/The-Harsh-Vardhan/EagleEye)!
+If you find EagleEye useful, please consider giving it a [star on GitHub](https://github.com/The-Harsh-Vardhan/EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision)!
 
 ---
 

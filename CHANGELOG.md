@@ -139,6 +139,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on proposing changes and n
 
 ## Links
 
-- [GitHub Repository](https://github.com/The-Harsh-Vardhan/EagleEye)
-- [Issue Tracker](https://github.com/The-Harsh-Vardhan/EagleEye/issues)
+- [GitHub Repository](https://github.com/The-Harsh-Vardhan/EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision)
+- [Issue Tracker](https://github.com/The-Harsh-Vardhan/EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision/issues)
 - [Documentation](README.md)

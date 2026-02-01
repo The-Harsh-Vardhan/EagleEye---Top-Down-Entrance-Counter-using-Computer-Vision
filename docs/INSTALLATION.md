@@ -53,8 +53,8 @@ For most users on Windows/Linux/macOS with Python already installed:
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/The-Harsh-Vardhan/EagleEye.git
-cd EagleEye
+git clone https://github.com/The-Harsh-Vardhan/EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision.git
+cd EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision
 
 # 2. Create virtual environment
 python -m venv .venv
@@ -101,8 +101,8 @@ If this works, you're done! If not, see platform-specific instructions below.
 cd "C:\My Drive\Projects"
 
 # 2. Clone repository
-git clone https://github.com/The-Harsh-Vardhan/EagleEye.git
-cd EagleEye
+git clone https://github.com/The-Harsh-Vardhan/EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision.git
+cd EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision
 
 # 3. Create virtual environment
 python -m venv .venv
@@ -179,8 +179,8 @@ sudo apt install git -y
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/The-Harsh-Vardhan/EagleEye.git
-cd EagleEye
+git clone https://github.com/The-Harsh-Vardhan/EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision.git
+cd EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision
 
 # 2. Create virtual environment
 python3 -m venv .venv
@@ -245,8 +245,8 @@ pip install opencv-python --no-cache-dir
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/The-Harsh-Vardhan/EagleEye.git
-cd EagleEye
+git clone https://github.com/The-Harsh-Vardhan/EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision.git
+cd EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision
 
 # 2. Create virtual environment
 python3 -m venv .venv
@@ -532,7 +532,7 @@ sqlite3 eagle_eye.db "SELECT COUNT(*) FROM crossing_events;"
 
 If you're still having issues:
 
-1. **Check [GitHub Issues](https://github.com/The-Harsh-Vardhan/EagleEye/issues)** for similar problems
+1. **Check [GitHub Issues](https://github.com/The-Harsh-Vardhan/EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision/issues)** for similar problems
 2. **Read [API Reference](API_REFERENCE.md)** for usage details
 3. **Open a new issue** with:
    - Your OS and Python version
@@ -554,4 +554,5 @@ After successful installation:
 ---
 
 **Installation successful?** Star the repo ⭐ and start counting! 🦅
+
 

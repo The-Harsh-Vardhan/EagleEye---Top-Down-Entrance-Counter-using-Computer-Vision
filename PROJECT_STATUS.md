@@ -135,7 +135,7 @@ Follow the guide in [DEPLOY.md](DEPLOY.md):
 git init
 git add .
 git commit -m "feat: initial release with complete documentation"
-git remote add origin https://github.com/YOURUSERNAME/EagleEye.git
+git remote add origin https://github.com/The-Harsh-Vardhan/EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision.git
 git push -u origin main
 ```
 

@@ -688,4 +688,4 @@ Frame = np.ndarray  # BGR image
 
 For more information, see the [README](../README.md) or [CONTRIBUTING](../CONTRIBUTING.md) guide.
 
-[⭐ Star on GitHub](https://github.com/The-Harsh-Vardhan/EagleEye)
+[⭐ Star on GitHub](https://github.com/The-Harsh-Vardhan/EagleEye-Top_Down_Entrance_Counter_Using_Computer_Vision)
