@@ -51,10 +51,10 @@ class MotionDetector:
     """
     
     def __init__(self,
-                 min_area: int = 500,
+                 min_area: int = 200,
                  max_area: int = 50000,
-                 history: int = 500,
-                 var_threshold: int = 50,
+                 history: int = 100,
+                 var_threshold: int = 25,
                  detect_shadows: bool = True):
         """
         Initialize the motion detector.

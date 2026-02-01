@@ -202,8 +202,10 @@ def main():
     if args.motion:
         print("Detection mode: Motion-based (background subtraction)")
         detector = MotionDetector(
-            min_area=args.min_size * args.min_size,
-            max_area=50000
+            min_area=200,  # Lower for smaller moving objects
+            max_area=50000,
+            history=100,
+            var_threshold=25  # More sensitive to motion
         )
     else:
         print("Detection mode: YOLOv8")

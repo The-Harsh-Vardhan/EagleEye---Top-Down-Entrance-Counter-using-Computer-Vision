@@ -9,18 +9,19 @@ Modify these values to tune the system for your specific use case.
 # DETECTION SETTINGS
 # =============================================================================
 
-# YOLOv8 model to use (nano model for real-time performance on laptops)
+# YOLOv8 model to use (nano model for speed)
 # Options: 'yolov8n.pt', 'yolov8s.pt', 'yolov8m.pt', 'yolov8l.pt', 'yolov8x.pt'
 YOLO_MODEL = 'yolov8n.pt'
 
 # Minimum confidence threshold for person detection (0.0 - 1.0)
 # Lower values detect more people but may include false positives
-CONFIDENCE_THRESHOLD = 0.5
+# Higher for speed
+CONFIDENCE_THRESHOLD = 0.3
 
 # Minimum bounding box size in pixels (width, height)
 # Detections smaller than this are considered noise and ignored
 # Useful for filtering out distant/partial detections in top-down view
-MIN_DETECTION_SIZE = (30, 30)
+MIN_DETECTION_SIZE = (10, 10)
 
 # YOLO class ID for person (COCO dataset)
 PERSON_CLASS_ID = 0
@@ -61,11 +62,12 @@ FRAME_RETRY_DELAY = 0.1
 
 # Frame skip for processing (1 = process every frame, 2 = every other frame, etc.)
 # Increase this value if struggling with real-time performance
-FRAME_SKIP = 2  # Process every 2nd frame for better performance
+FRAME_SKIP = 3  # Process every 3rd frame for speed
 
 # Target frame width for processing (smaller = faster)
 # Set to None to process at original resolution
-PROCESSING_WIDTH = 960
+# Reduced for faster processing
+PROCESSING_WIDTH = 640
 
 # Display resize (None = same as processing, or set smaller for faster display)
 DISPLAY_WIDTH = 960
