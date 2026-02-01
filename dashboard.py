@@ -14,6 +14,96 @@ import cv2
 import numpy as np
 from PIL import Image
 import time
+import random
+
+
+def generate_demo_data():
+    """Generate impressive demo statistics for showcase"""
+    now = datetime.now()
+    
+    # Generate realistic cafeteria traffic patterns
+    demo_stats = {
+        "current_occupancy": random.randint(45, 85),
+        "max_capacity": 150,
+        "total_in": random.randint(2500, 3500),
+        "total_out": random.randint(2400, 3400),
+        "today_in": random.randint(180, 280),
+        "today_out": random.randint(160, 260),
+        "avg_dwell_time": random.randint(18, 28),  # minutes
+        "peak_hour": "12:30 PM",
+        "busiest_day": "Tuesday",
+        "weekly_visitors": random.randint(12000, 18000),
+        "monthly_visitors": random.randint(48000, 65000),
+        "accuracy": 98.7,
+        "uptime": 99.2,
+    }
+    
+    # Generate hourly data for today
+    hours = list(range(7, 21))  # 7 AM to 8 PM
+    hourly_data = []
+    for hour in hours:
+        # Simulate meal rush patterns
+        if hour in [8, 9]:  # Breakfast
+            entries = random.randint(40, 80)
+        elif hour in [12, 13]:  # Lunch rush
+            entries = random.randint(120, 200)
+        elif hour in [18, 19]:  # Dinner
+            entries = random.randint(100, 160)
+        else:
+            entries = random.randint(15, 50)
+        
+        exits = int(entries * random.uniform(0.8, 1.1))
+        hourly_data.append({
+            'hour': f"{hour:02d}:00",
+            'entries': entries,
+            'exits': exits
+        })
+    
+    # Generate weekly data
+    days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    weekly_data = []
+    for i, day in enumerate(days):
+        date = now - timedelta(days=6-i)
+        if day in ['Saturday', 'Sunday']:
+            total = random.randint(800, 1200)
+        else:
+            total = random.randint(2000, 3000)
+        weekly_data.append({
+            'date': date.strftime('%Y-%m-%d'),
+            'day': day,
+            'visitors': total
+        })
+    
+    # Generate recent events
+    recent_events = []
+    for i in range(15):
+        event_time = now - timedelta(minutes=i*2)
+        direction = random.choice(['IN', 'IN', 'IN', 'OUT', 'OUT'])  # Slight bias to IN
+        occupancy = demo_stats["current_occupancy"] + random.randint(-5, 5)
+        recent_events.append({
+            'timestamp': event_time,
+            'direction': direction,
+            'occupancy': max(0, occupancy)
+        })
+    
+    # Generate heatmap data
+    heatmap_data = []
+    for day_offset in range(7):
+        date = now - timedelta(days=day_offset)
+        for hour in range(7, 21):
+            if hour in [12, 13]:
+                occupancy = random.randint(60, 95)
+            elif hour in [8, 9, 18, 19]:
+                occupancy = random.randint(40, 70)
+            else:
+                occupancy = random.randint(10, 40)
+            heatmap_data.append({
+                'date': date.date(),
+                'hour': hour,
+                'occupancy': occupancy
+            })
+    
+    return demo_stats, hourly_data, weekly_data, recent_events, heatmap_data
 
 # Page configuration
 st.set_page_config(
@@ -178,6 +268,24 @@ def main():
     # Sidebar
     st.sidebar.header("⚙️ Settings")
     
+    # DEMO MODE - Prominent toggle
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("### 🎯 Demo Mode")
+    demo_mode = st.sidebar.toggle("Enable Demo Mode", value=False, help="Show impressive sample statistics")
+    
+    if demo_mode:
+        st.sidebar.success("✨ Demo Mode Active!")
+        demo_stats, hourly_data, weekly_data, recent_events, heatmap_data = generate_demo_data()
+        
+        # Show key demo stats in sidebar
+        st.sidebar.markdown("---")
+        st.sidebar.markdown("#### 📊 Quick Stats")
+        st.sidebar.metric("🎯 Accuracy", f"{demo_stats['accuracy']}%")
+        st.sidebar.metric("⏱️ Uptime", f"{demo_stats['uptime']}%")
+        st.sidebar.metric("👥 Monthly Visitors", f"{demo_stats['monthly_visitors']:,}")
+    
+    st.sidebar.markdown("---")
+    
     # Time range selector
     time_range = st.sidebar.selectbox(
         "Time Range",
@@ -206,45 +314,156 @@ def main():
     if st.sidebar.button("🔄 Refresh Now"):
         st.rerun()
     
-    # Main content
-    tab1, tab2, tab3, tab4 = st.tabs(["📊 Overview", "📈 Analytics", "🕐 Historical", "⚙️ System"])
+    # Main content tabs
+    if demo_mode:
+        tab1, tab2, tab3, tab4, tab5 = st.tabs(["📊 Overview", "📈 Analytics", "🏆 Insights", "🕐 Historical", "⚙️ System"])
+    else:
+        tab1, tab2, tab3, tab4 = st.tabs(["📊 Overview", "📈 Analytics", "🕐 Historical", "⚙️ System"])
     
     # TAB 1: Overview
     with tab1:
-        # Current statistics
-        stats = get_current_stats()
-        today_stats = get_today_stats()
-        
-        col1, col2, col3, col4 = st.columns(4)
-        
-        with col1:
-            st.metric(
-                label="🟢 Current Occupancy",
-                value=stats["occupancy"],
-                delta=None
+        if demo_mode:
+            # DEMO MODE - Impressive Statistics
+            st.markdown("### 🎯 Live Monitoring Dashboard")
+            
+            # Big impressive numbers
+            col1, col2, col3, col4, col5 = st.columns(5)
+            
+            with col1:
+                st.metric(
+                    label="🟢 Current Occupancy",
+                    value=demo_stats["current_occupancy"],
+                    delta=f"{demo_stats['current_occupancy']*100//demo_stats['max_capacity']}% capacity"
+                )
+            
+            with col2:
+                st.metric(
+                    label="⬆️ Total IN",
+                    value=f"{demo_stats['total_in']:,}",
+                    delta=f"+{demo_stats['today_in']} today"
+                )
+            
+            with col3:
+                st.metric(
+                    label="⬇️ Total OUT",
+                    value=f"{demo_stats['total_out']:,}",
+                    delta=f"+{demo_stats['today_out']} today"
+                )
+            
+            with col4:
+                st.metric(
+                    label="⏱️ Avg Dwell Time",
+                    value=f"{demo_stats['avg_dwell_time']} min",
+                    delta="optimal"
+                )
+            
+            with col5:
+                st.metric(
+                    label="🔥 Peak Hour",
+                    value=demo_stats["peak_hour"],
+                    delta="lunch rush"
+                )
+            
+            st.markdown("---")
+            
+            # Traffic chart
+            col1, col2 = st.columns([2, 1])
+            
+            with col1:
+                st.subheader("📈 Today's Traffic Flow")
+                hourly_df = pd.DataFrame(hourly_data)
+                
+                fig = go.Figure()
+                fig.add_trace(go.Bar(
+                    x=hourly_df['hour'],
+                    y=hourly_df['entries'],
+                    name='Entries',
+                    marker_color='#00C853'
+                ))
+                fig.add_trace(go.Bar(
+                    x=hourly_df['hour'],
+                    y=hourly_df['exits'],
+                    name='Exits',
+                    marker_color='#FF5252'
+                ))
+                
+                fig.update_layout(
+                    barmode='group',
+                    height=350,
+                    xaxis_title="Hour",
+                    yaxis_title="Count",
+                    legend=dict(orientation="h", yanchor="bottom", y=1.02),
+                    margin=dict(l=20, r=20, t=40, b=20)
+                )
+                st.plotly_chart(fig, use_container_width=True)
+            
+            with col2:
+                st.subheader("📋 Recent Events")
+                events_df = pd.DataFrame(recent_events)
+                events_df['Time'] = events_df['timestamp'].dt.strftime('%H:%M:%S')
+                events_df['Direction'] = events_df['direction'].apply(
+                    lambda x: "⬆️ IN" if x == "IN" else "⬇️ OUT"
+                )
+                display_df = events_df[['Time', 'Direction', 'occupancy']].head(10)
+                display_df.columns = ['Time', 'Direction', 'Occupancy']
+                st.dataframe(display_df, use_container_width=True, hide_index=True)
+            
+            # Weekly trend
+            st.subheader("📊 Weekly Visitors")
+            weekly_df = pd.DataFrame(weekly_data)
+            
+            fig = px.bar(
+                weekly_df,
+                x='day',
+                y='visitors',
+                color='visitors',
+                color_continuous_scale='Viridis',
+                title=""
             )
-        
-        with col2:
-            st.metric(
-                label="⬆️ Total IN",
-                value=stats["in"],
-                delta=f"+{today_stats['in']} today"
+            fig.update_layout(
+                height=300,
+                xaxis_title="",
+                yaxis_title="Visitors",
+                showlegend=False,
+                coloraxis_showscale=False
             )
-        
-        with col3:
-            st.metric(
-                label="⬇️ Total OUT",
-                value=stats["out"],
-                delta=f"+{today_stats['out']} today"
-            )
-        
-        with col4:
-            net_today = today_stats['in'] - today_stats['out']
-            st.metric(
-                label="📊 Today's Net",
-                value=net_today,
-                delta=None
-            )
+            st.plotly_chart(fig, use_container_width=True)
+            
+        else:
+            # Normal mode - use database
+            stats = get_current_stats()
+            today_stats = get_today_stats()
+            
+            col1, col2, col3, col4 = st.columns(4)
+            
+            with col1:
+                st.metric(
+                    label="🟢 Current Occupancy",
+                    value=stats["occupancy"],
+                    delta=None
+                )
+            
+            with col2:
+                st.metric(
+                    label="⬆️ Total IN",
+                    value=stats["in"],
+                    delta=f"+{today_stats['in']} today"
+                )
+            
+            with col3:
+                st.metric(
+                    label="⬇️ Total OUT",
+                    value=stats["out"],
+                    delta=f"+{today_stats['out']} today"
+                )
+            
+            with col4:
+                net_today = today_stats['in'] - today_stats['out']
+                st.metric(
+                    label="📊 Today's Net",
+                    value=net_today,
+                    delta=None
+                )
         
         st.markdown("---")
         
@@ -396,8 +615,109 @@ def main():
         else:
             st.info("Not enough data for heatmap.")
     
-    # TAB 3: Historical Data
-    with tab3:
+    # TAB 3: Insights (Demo Mode) / Historical (Normal Mode)
+    if demo_mode:
+        with tab3:
+            st.subheader("🏆 AI-Powered Insights")
+            
+            # Key insights cards
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                st.markdown("### 📊 Capacity Analysis")
+                capacity_pct = demo_stats['current_occupancy'] * 100 // demo_stats['max_capacity']
+                
+                fig = go.Figure(go.Indicator(
+                    mode="gauge+number+delta",
+                    value=capacity_pct,
+                    title={'text': "Capacity Utilization"},
+                    delta={'reference': 50, 'suffix': "%"},
+                    gauge={
+                        'axis': {'range': [0, 100]},
+                        'bar': {'color': "#1f77b4"},
+                        'steps': [
+                            {'range': [0, 40], 'color': "#d4edda"},
+                            {'range': [40, 70], 'color': "#fff3cd"},
+                            {'range': [70, 100], 'color': "#f8d7da"}
+                        ],
+                        'threshold': {
+                            'line': {'color': "red", 'width': 4},
+                            'thickness': 0.75,
+                            'value': 85
+                        }
+                    }
+                ))
+                fig.update_layout(height=250, margin=dict(l=20, r=20, t=40, b=20))
+                st.plotly_chart(fig, use_container_width=True)
+            
+            with col2:
+                st.markdown("### 🔮 AI Predictions")
+                st.markdown("""
+                **Next Hour Forecast:**
+                - Expected entries: **~85 people**
+                - Expected exits: **~72 people**
+                - Predicted occupancy: **~68 people**
+                
+                **Recommendations:**
+                - ✅ Optimal staffing for current load
+                - ⚠️ Lunch rush approaching in 2 hours
+                - 📊 Suggest preparing extra seating
+                """)
+            
+            with col3:
+                st.markdown("### ⚡ Efficiency Metrics")
+                metrics = [
+                    ("Detection Accuracy", "98.7%", "✅"),
+                    ("Processing Speed", "15 FPS", "✅"),
+                    ("Avg Latency", "67ms", "✅"),
+                    ("False Positives", "1.3%", "✅"),
+                    ("System Uptime", "99.2%", "✅"),
+                    ("Data Sync", "Real-time", "✅")
+                ]
+                for name, value, status in metrics:
+                    st.markdown(f"{status} **{name}:** {value}")
+            
+            st.markdown("---")
+            
+            # Heatmap visualization
+            st.subheader("🗺️ Weekly Occupancy Heatmap")
+            
+            heatmap_df = pd.DataFrame(heatmap_data)
+            heatmap_pivot = heatmap_df.pivot(index='hour', columns='date', values='occupancy')
+            
+            fig = px.imshow(
+                heatmap_pivot,
+                labels=dict(x="Date", y="Hour", color="Occupancy"),
+                x=[str(d) for d in heatmap_pivot.columns],
+                y=heatmap_pivot.index,
+                color_continuous_scale='RdYlGn_r',
+                aspect="auto"
+            )
+            fig.update_layout(height=400)
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Fun facts
+            st.markdown("---")
+            st.subheader("🎉 Fun Facts")
+            col1, col2, col3, col4 = st.columns(4)
+            with col1:
+                st.metric("🍕 Meals Served Today", f"{demo_stats['today_in']}")
+            with col2:
+                st.metric("☕ Coffee Breaks", f"{random.randint(50, 100)}")
+            with col3:
+                st.metric("🏃 Busiest Minute", "12:34 PM (23 entries!)")
+            with col4:
+                st.metric("🎯 Perfect Days", "42 (no overcrowding)")
+        
+        # Historical is tab4 in demo mode
+        historical_tab = tab4
+        system_tab = tab5
+    else:
+        historical_tab = tab3
+        system_tab = tab4
+    
+    # Historical Data Tab
+    with historical_tab:
         st.subheader("📅 Historical Data")
         
         # Date range selector
@@ -452,7 +772,7 @@ def main():
                 st.info("No data available for selected date range.")
     
     # TAB 4: System Info
-    with tab4:
+    with system_tab:
         st.subheader("⚙️ System Information")
         
         col1, col2 = st.columns(2)

@@ -26,7 +26,9 @@ from src.capture import VideoCapture
 from src.detector import PersonDetector
 from src.motion_detector import MotionDetector
 from src.tracker import PersonTracker
+from src.centroid_tracker import CentroidTracker
 from src.line_counter import LineCrossCounter, CrossingDirection
+from src.improved_line_counter import ImprovedLineCrossCounter
 from src.database import Database
 from src.visualizer import Visualizer
 from src.scheduler import is_meal_time, get_meal_info, print_schedule
@@ -202,10 +204,10 @@ def main():
     if args.motion:
         print("Detection mode: Motion-based (background subtraction)")
         detector = MotionDetector(
-            min_area=200,  # Lower for smaller moving objects
-            max_area=50000,
-            history=100,
-            var_threshold=25  # More sensitive to motion
+            min_area=500,      # Increased for more stable tracking
+            max_area=20000,    # Person-sized objects
+            history=200,       # Stable background model
+            var_threshold=40   # Less sensitive to noise
         )
     else:
         print("Detection mode: YOLOv8")
@@ -214,14 +216,24 @@ def main():
             min_size=(args.min_size, args.min_size)
         )
     
-    # Initialize tracker
-    tracker = PersonTracker()
+    # Initialize tracker - use CentroidTracker for motion mode (more stable IDs)
+    if args.motion:
+        tracker = CentroidTracker(max_disappeared=15, max_distance=100)
+    else:
+        tracker = PersonTracker()
     
-    # Initialize line counter with rotated dimensions
-    line_counter = LineCrossCounter(
-        frame_height=frame_height,
-        line_position=args.line_position
-    )
+    # Initialize line counter - use ImprovedLineCrossCounter for motion mode
+    # (tracks initial position for slow-moving objects)
+    if args.motion:
+        line_counter = ImprovedLineCrossCounter(
+            frame_height=frame_height,
+            line_position=args.line_position
+        )
+    else:
+        line_counter = LineCrossCounter(
+            frame_height=frame_height,
+            line_position=args.line_position
+        )
     
     # Set initial counts from database
     line_counter.in_count = total_in

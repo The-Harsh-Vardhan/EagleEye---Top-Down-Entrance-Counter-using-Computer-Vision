@@ -89,3 +89,9 @@ desktop.ini
 *.tmp
 .env
 .env.local
+
+# Demo output files
+demo_output.mp4
+*_output.mp4
+frame_*.jpg
+sample_*.jpg

@@ -253,6 +253,8 @@ python main.py --source rtsp://username:password@192.168.1.100:554/stream
 | Argument | Short | Type | Default | Description |
 |----------|-------|------|---------|-------------|
 | `--source` | `-s` | str | **Required** | Video source (file path, URL, or webcam index) |
+| `--motion` | | flag | `false` | Use motion detection (recommended for top-down views) |
+| `--rotate` | | int | `0` | Rotate video (0, 90, 180, or 270 degrees) |
 | `--line-position` | `-l` | float | `0.5` | Counting line position (0.0=top, 1.0=bottom) |
 | `--confidence` | `-c` | float | `0.5` | Detection confidence threshold (0.0-1.0) |
 | `--min-size` | | int | `30` | Minimum detection size in pixels |
