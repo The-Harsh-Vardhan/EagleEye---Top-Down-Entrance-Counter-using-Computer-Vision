@@ -1,0 +1,19 @@
+# EagleEye - People Counting System Dependencies
+# Install with: pip install -r requirements.txt
+
+# YOLOv8 for person detection
+ultralytics>=8.0.0
+
+# Computer vision
+opencv-python>=4.8.0
+
+# ByteTrack tracking (via supervision library)
+supervision>=0.16.0
+
+# Numerical operations
+numpy>=1.24.0
+
+# Progress bar
+tqdm>=4.65.0
+
+# Note: SQLite is included in Python standard library
