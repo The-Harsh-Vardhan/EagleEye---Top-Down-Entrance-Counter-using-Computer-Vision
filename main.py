@@ -20,8 +20,12 @@ from src.config import (
     CONFIDENCE_THRESHOLD,
     DEFAULT_LINE_POSITION,
     MIN_DETECTION_SIZE,
-    PROCESSING_WIDTH
+    PROCESSING_WIDTH,
+    VERSION,
+    LOG_LEVEL,
+    LOG_TO_FILE
 )
+from src.logging_config import setup_logging, get_logger
 from src.capture import VideoCapture
 from src.detector import PersonDetector
 from src.motion_detector import MotionDetector
@@ -32,6 +36,9 @@ from src.improved_line_counter import ImprovedLineCrossCounter
 from src.database import Database
 from src.visualizer import Visualizer
 from src.scheduler import is_meal_time, get_meal_info, print_schedule
+
+# Initialize logger
+logger = setup_logging(level=LOG_LEVEL, log_to_file=LOG_TO_FILE)
 
 
 def parse_arguments():
@@ -137,9 +144,9 @@ def main():
     """
     args = parse_arguments()
     
-    print("=" * 60)
-    print("🦅 EagleEye - People Counting System")
-    print("=" * 60)
+    logger.info("=" * 60)
+    logger.info(f"🦅 EagleEye v{VERSION} - People Counting System")
+    logger.info("=" * 60)
     
     # Check meal schedule if --scheduled flag is used
     if args.scheduled:
@@ -155,20 +162,20 @@ def main():
             print(f"✅ {meal_info['message']}")
             print(f"   Active until {meal_info['end_time']}")
     
-    print(f"Source: {args.source}")
-    print(f"Line position: {args.line_position}")
-    print(f"Confidence threshold: {args.confidence}")
-    print("=" * 60)
+    logger.info(f"Source: {args.source}")
+    logger.info(f"Line position: {args.line_position}")
+    logger.info(f"Confidence threshold: {args.confidence}")
+    logger.info("=" * 60)
     
     # Initialize database
     db = Database()
     if args.reset_db:
-        print("Resetting database...")
+        logger.warning("Resetting database...")
         db.clear_events()
     
     # Load any existing counts from database
     total_in, total_out = db.get_total_counts()
-    print(f"Previous counts - IN: {total_in}, OUT: {total_out}")
+    logger.info(f"Previous counts - IN: {total_in}, OUT: {total_out}")
     
     # Initialize video capture
     try:
@@ -180,7 +187,7 @@ def main():
         else:
             print(f"Mode: Video file ({info['total_frames']} frames)")
     except ValueError as e:
-        print(f"Error: {e}")
+        logger.error(f"Failed to open video source: {e}")
         sys.exit(1)
     
     # Calculate dimensions after rotation
@@ -304,10 +311,11 @@ def main():
                     occupancy=line_counter.occupancy,
                     timestamp=datetime.now()
                 )
-                print(f"[{datetime.now().strftime('%H:%M:%S')}] "
-                      f"ID:{event.track_id} crossed {event.direction.value} "
-                      f"| IN:{line_counter.in_count} OUT:{line_counter.out_count} "
-                      f"| Occupancy:{line_counter.occupancy}")
+                logger.info(
+                    f"ID:{event.track_id} crossed {event.direction.value} "
+                    f"| IN:{line_counter.in_count} OUT:{line_counter.out_count} "
+                    f"| Occupancy:{line_counter.occupancy}"
+                )
             
             # Step 5: Visualize
             stats = line_counter.get_stats()

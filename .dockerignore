@@ -1,0 +1,77 @@
+# =============================================================================
+# EagleEye Docker Ignore
+# =============================================================================
+# Files and directories to exclude from Docker build context
+
+# Git
+.git
+.gitignore
+.github
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info
+.eggs
+*.egg
+
+# Virtual environments
+.venv
+venv
+ENV
+env
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# Database (will be created in volume)
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs (will be created in volume)
+logs/
+*.log
+
+# Test files
+tests/
+pytest_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Development files
+.env
+.env.local
+*.bak
+*.tmp
+
+# Large files (mount separately)
+Dataset/
+*.mp4
+*.avi
+*.mov
+
+# Build artifacts
+dist/
+build/
+
+# Extras folder
+Extras/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini

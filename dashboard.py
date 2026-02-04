@@ -15,6 +15,15 @@ import numpy as np
 from PIL import Image
 import time
 import random
+import sys
+sys.path.insert(0, '.')
+
+# Import time series analyzer
+try:
+    from src.time_series import TimeSeriesAnalyzer
+    TIME_SERIES_AVAILABLE = True
+except ImportError:
+    TIME_SERIES_AVAILABLE = False
 
 
 def generate_demo_data():
@@ -316,9 +325,9 @@ def main():
     
     # Main content tabs
     if demo_mode:
-        tab1, tab2, tab3, tab4, tab5 = st.tabs(["📊 Overview", "📈 Analytics", "🏆 Insights", "🕐 Historical", "⚙️ System"])
+        tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["📊 Overview", "📈 Analytics", "📉 Time Series", "🏆 Insights", "🕐 Historical", "⚙️ System"])
     else:
-        tab1, tab2, tab3, tab4 = st.tabs(["📊 Overview", "📈 Analytics", "🕐 Historical", "⚙️ System"])
+        tab1, tab2, tab3, tab4, tab5 = st.tabs(["📊 Overview", "📈 Analytics", "📉 Time Series", "🕐 Historical", "⚙️ System"])
     
     # TAB 1: Overview
     with tab1:
@@ -615,9 +624,322 @@ def main():
         else:
             st.info("Not enough data for heatmap.")
     
-    # TAB 3: Insights (Demo Mode) / Historical (Normal Mode)
+    # TAB 3: Time Series Analysis (both modes)
+    with tab3:
+        st.subheader("📉 Time Series Analysis")
+        
+        if not TIME_SERIES_AVAILABLE:
+            st.warning("⚠️ Time Series module not available. Please check the installation.")
+        else:
+            analyzer = TimeSeriesAnalyzer()
+            
+            # Analysis period selector
+            analysis_period = st.selectbox(
+                "Analysis Period",
+                ["Last 7 Days", "Last 14 Days", "Last 30 Days", "Last 90 Days"],
+                index=0
+            )
+            period_days = {"Last 7 Days": 7, "Last 14 Days": 14, "Last 30 Days": 30, "Last 90 Days": 90}
+            days = period_days[analysis_period]
+            
+            # Statistics Summary
+            st.markdown("### 📊 Statistical Summary")
+            stats = analyzer.get_statistics(days=days)
+            
+            col1, col2, col3, col4 = st.columns(4)
+            with col1:
+                st.metric("Total IN", stats.total_in)
+            with col2:
+                st.metric("Total OUT", stats.total_out)
+            with col3:
+                st.metric("Net Flow", stats.net_flow, delta=None)
+            with col4:
+                st.metric("Peak Hour", stats.peak_hour)
+            
+            col1, col2, col3, col4 = st.columns(4)
+            with col1:
+                st.metric("Avg Occupancy", f"{stats.avg_occupancy:.1f}")
+            with col2:
+                st.metric("Max Occupancy", stats.max_occupancy)
+            with col3:
+                st.metric("Min Occupancy", stats.min_occupancy)
+            with col4:
+                st.metric("Peak Count", stats.peak_count)
+            
+            st.markdown("---")
+            
+            # Hourly Trend Chart
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("### 📈 Hourly Traffic Pattern")
+                hourly = analyzer.get_hourly_trend(days=days)
+                
+                if not hourly.empty:
+                    fig = go.Figure()
+                    fig.add_trace(go.Bar(
+                        x=hourly['hour'],
+                        y=hourly['entries'],
+                        name='Entries',
+                        marker_color='#00C853'
+                    ))
+                    fig.add_trace(go.Bar(
+                        x=hourly['hour'],
+                        y=hourly['exits'],
+                        name='Exits',
+                        marker_color='#FF5252'
+                    ))
+                    fig.update_layout(
+                        barmode='group',
+                        height=350,
+                        xaxis_title="Hour of Day",
+                        yaxis_title="Count",
+                        xaxis=dict(tickmode='linear', tick0=0, dtick=2)
+                    )
+                    st.plotly_chart(fig, use_container_width=True)
+                else:
+                    st.info("No hourly data available.")
+            
+            with col2:
+                st.markdown("### 📊 Weekly Pattern")
+                weekly = analyzer.get_weekly_pattern(weeks=4)
+                
+                if not weekly.empty:
+                    fig = go.Figure()
+                    fig.add_trace(go.Bar(
+                        x=weekly['day_of_week'],
+                        y=weekly['avg_entries'],
+                        name='Avg Entries',
+                        marker_color='#2196F3'
+                    ))
+                    fig.add_trace(go.Bar(
+                        x=weekly['day_of_week'],
+                        y=weekly['avg_exits'],
+                        name='Avg Exits',
+                        marker_color='#FF9800'
+                    ))
+                    fig.update_layout(
+                        barmode='group',
+                        height=350,
+                        xaxis_title="Day of Week",
+                        yaxis_title="Average Count"
+                    )
+                    st.plotly_chart(fig, use_container_width=True)
+                else:
+                    st.info("No weekly data available.")
+            
+            st.markdown("---")
+            
+            # Heatmap and Moving Average
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("### 🗺️ Hour × Day Heatmap")
+                heatmap = analyzer.get_hourly_heatmap_data(weeks=4)
+                
+                if not heatmap.empty:
+                    fig = px.imshow(
+                        heatmap,
+                        labels=dict(x="Day of Week", y="Hour", color="Entries"),
+                        color_continuous_scale='Viridis',
+                        aspect="auto"
+                    )
+                    fig.update_layout(height=350)
+                    st.plotly_chart(fig, use_container_width=True)
+                else:
+                    st.info("Not enough data for heatmap.")
+            
+            with col2:
+                st.markdown("### 📉 Daily Trend with Moving Average")
+                ma_data = analyzer.get_moving_average(window_days=7)
+                
+                if not ma_data.empty:
+                    fig = go.Figure()
+                    fig.add_trace(go.Scatter(
+                        x=ma_data['date'].astype(str),
+                        y=ma_data['entries'],
+                        name='Daily Entries',
+                        mode='lines+markers',
+                        line=dict(color='#9E9E9E', width=1),
+                        marker=dict(size=4)
+                    ))
+                    fig.add_trace(go.Scatter(
+                        x=ma_data['date'].astype(str),
+                        y=ma_data['ma_entries'],
+                        name='7-Day Moving Avg',
+                        mode='lines',
+                        line=dict(color='#2196F3', width=3)
+                    ))
+                    fig.update_layout(
+                        height=350,
+                        xaxis_title="Date",
+                        yaxis_title="Entries"
+                    )
+                    st.plotly_chart(fig, use_container_width=True)
+                else:
+                    st.info("Not enough data for moving average.")
+            
+            st.markdown("---")
+            
+            # Forecasting Section
+            st.markdown("### 🔮 Traffic Forecast")
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("#### Next Hour Prediction")
+                forecast = analyzer.forecast_next_hour()
+                
+                next_hour = (datetime.now().hour + 1) % 24
+                st.write(f"**Predicted for {next_hour:02d}:00**")
+                
+                fcol1, fcol2, fcol3 = st.columns(3)
+                with fcol1:
+                    st.metric("Expected Entries", f"{forecast['predicted_entries']:.0f}")
+                with fcol2:
+                    st.metric("Expected Exits", f"{forecast['predicted_exits']:.0f}")
+                with fcol3:
+                    st.metric("Confidence", f"{forecast['confidence']*100:.0f}%")
+            
+            with col2:
+                st.markdown("#### Peak Hours Detected")
+                peak_hours = analyzer.detect_peak_hours(percentile=75)
+                
+                if peak_hours:
+                    peak_str = ", ".join([f"{h:02d}:00" for h in peak_hours])
+                    st.info(f"🔥 **Peak Hours:** {peak_str}")
+                else:
+                    st.info("Not enough data to detect peak hours.")
+                
+                # Anomalies
+                anomalies = analyzer.detect_anomalies(std_threshold=2.0)
+                if not anomalies.empty:
+                    st.warning(f"⚠️ **{len(anomalies)} anomalous days detected**")
+                    st.dataframe(anomalies, use_container_width=True, hide_index=True)
+            
+            st.markdown("---")
+            
+            st.markdown("---")
+            
+            # ==================== MEAL TIME ANALYSIS ====================
+            st.markdown("### 🍽️ Meal Time Analysis")
+            st.markdown("**Meal Schedule:** Breakfast (7:30-9:30), Lunch (12:00-14:00), Snacks (17:30-18:30), Dinner (19:30-21:30)")
+            
+            # Import MEAL_TIMES for display
+            try:
+                from src.time_series import MEAL_TIMES, MealStats
+                
+                # Meal comparison table
+                meal_comparison = analyzer.get_meal_comparison(days=days)
+                if not meal_comparison.empty:
+                    st.dataframe(meal_comparison, use_container_width=True, hide_index=True)
+                else:
+                    st.info("No meal data available yet.")
+                
+                # Busiest meal highlight
+                busiest_meal, busiest_stats = analyzer.get_busiest_meal(days=days)
+                if busiest_stats.total_entries > 0:
+                    emoji = MEAL_TIMES[busiest_meal]['emoji']
+                    st.success(f"🏆 **Busiest Meal:** {emoji} {busiest_meal} with {busiest_stats.total_entries} entries (Avg Occupancy: {busiest_stats.avg_occupancy})")
+                
+                # Meal breakdown charts
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    st.markdown("#### 📊 Entries by Meal")
+                    all_meals = analyzer.get_all_meals_stats(days=days)
+                    
+                    if all_meals:
+                        meal_names = [f"{MEAL_TIMES[m]['emoji']} {m}" for m in all_meals.keys()]
+                        entries = [s.total_entries for s in all_meals.values()]
+                        
+                        if sum(entries) > 0:
+                            fig = go.Figure(data=[go.Pie(
+                                labels=meal_names,
+                                values=entries,
+                                hole=0.4,
+                                marker_colors=['#FF9800', '#4CAF50', '#9C27B0', '#2196F3']
+                            )])
+                            fig.update_layout(
+                                height=300,
+                                showlegend=True,
+                                legend=dict(orientation="h", yanchor="bottom", y=-0.2)
+                            )
+                            st.plotly_chart(fig, use_container_width=True)
+                        else:
+                            st.info("No meal entries recorded yet.")
+                
+                with col2:
+                    st.markdown("#### ⏱️ Select Meal for Breakdown")
+                    selected_meal = st.selectbox(
+                        "Meal",
+                        list(MEAL_TIMES.keys()),
+                        key="meal_select",
+                        format_func=lambda x: f"{MEAL_TIMES[x]['emoji']} {x}"
+                    )
+                    
+                    meal_breakdown = analyzer.get_meal_hourly_breakdown(selected_meal, days=days)
+                    if not meal_breakdown.empty:
+                        fig = go.Figure()
+                        fig.add_trace(go.Bar(
+                            x=meal_breakdown['time'],
+                            y=meal_breakdown['entries'],
+                            name='Entries',
+                            marker_color='#4CAF50'
+                        ))
+                        fig.add_trace(go.Bar(
+                            x=meal_breakdown['time'],
+                            y=meal_breakdown['exits'],
+                            name='Exits',
+                            marker_color='#F44336'
+                        ))
+                        fig.update_layout(
+                            height=250,
+                            barmode='group',
+                            xaxis_title="Hour",
+                            yaxis_title="Count",
+                            margin=dict(l=20, r=20, t=20, b=20)
+                        )
+                        st.plotly_chart(fig, use_container_width=True)
+                    else:
+                        st.info(f"No data for {selected_meal} yet.")
+                
+            except ImportError:
+                st.warning("Meal time analysis not available.")
+            
+            st.markdown("---")
+            
+            # Export Section
+            st.markdown("### 📥 Export Data")
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                export_start = st.date_input("Export Start Date", datetime.now() - timedelta(days=30), key="ts_export_start")
+            with col2:
+                export_end = st.date_input("Export End Date", datetime.now(), key="ts_export_end")
+            
+            if st.button("📥 Generate CSV Export"):
+                import io
+                from datetime import datetime as dt
+                
+                start_dt = datetime.combine(export_start, datetime.min.time())
+                end_dt = datetime.combine(export_end, datetime.max.time())
+                
+                df = analyzer._get_dataframe(start_date=start_dt, end_date=end_dt)
+                if not df.empty:
+                    csv = df.to_csv(index=False)
+                    st.download_button(
+                        label="⬇️ Download CSV",
+                        data=csv,
+                        file_name=f"eagleeye_timeseries_{export_start}_to_{export_end}.csv",
+                        mime="text/csv"
+                    )
+                    st.success(f"✅ Ready to download {len(df)} records!")
+                else:
+                    st.warning("No data available for the selected date range.")
+    
+    # TAB 4: Insights (Demo Mode only)
     if demo_mode:
-        with tab3:
+        with tab4:
             st.subheader("🏆 AI-Powered Insights")
             
             # Key insights cards
@@ -709,12 +1031,12 @@ def main():
             with col4:
                 st.metric("🎯 Perfect Days", "42 (no overcrowding)")
         
-        # Historical is tab4 in demo mode
+        # Historical is tab5 in demo mode (after Time Series and Insights)
+        historical_tab = tab5
+        system_tab = tab6
+    else:
         historical_tab = tab4
         system_tab = tab5
-    else:
-        historical_tab = tab3
-        system_tab = tab4
     
     # Historical Data Tab
     with historical_tab:
